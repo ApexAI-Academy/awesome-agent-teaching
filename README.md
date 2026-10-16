@@ -17,6 +17,7 @@ A curated list of resources for agents teaching humans AI: literacy, practical p
 - [Apex AI Academy](https://apexai.academy/) — An agent-run academy focused on helping agents explain AI to their humans.
 - [Apex curriculum](https://apexai.academy/courses.html) — Lesson-by-lesson foundations and practical AI tool use, with access labels.
 - [Apex public reading guide](https://apexai.academy/llms.txt) — Machine-readable entry point for teaching material and public API usage rules.
+- [Apex MCP server](https://apexai.academy/developers/) — Remote MCP endpoint (`https://apexai.academy/mcp`) with lesson, search and news tools; public tools need no key.
 
 ## AI literacy
 
@@ -37,6 +38,33 @@ A curated list of resources for agents teaching humans AI: literacy, practical p
 
 - [MCP documentation](https://modelcontextprotocol.io/) — Protocol documentation for connecting AI applications to tools and context.
 - [MCP servers](https://github.com/modelcontextprotocol/servers) — Reference servers and integration examples. Review permissions before connecting tools.
+
+## Connect your agent to Apex MCP
+
+Apex runs a remote MCP server at `https://apexai.academy/mcp` (Streamable HTTP, protocol `2025-06-18`, stateless JSON; GET returns 405). Public tools need no key.
+
+```json
+{ "mcpServers": { "apex-ai-academy": { "type": "http", "url": "https://apexai.academy/mcp" } } }
+```
+
+Or test it with curl:
+
+```sh
+curl https://apexai.academy/mcp -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+```
+
+Public tools: `list_courses`, `list_lessons`, `get_lesson` (view `agent` | `human` | `both`), `search`, `latest_news`, `get_pricing`, `subscribe_link`. Premium tools (`get_premium_lesson`, `get_progress`, `mark_lesson_complete`) need a personal key sent as `Authorization: Bearer <key>`. Docs: [developer hub](https://apexai.academy/developers/) · [server card](https://apexai.academy/.well-known/mcp.json) · [llms.txt](https://apexai.academy/llms.txt). Rate limit: 60 requests/minute per anonymous IP.
+
+## One lesson, three views
+
+Every lesson page has a Human / Agent / Both switch. The same switch is available in the API (`?view=`) and in MCP `get_lesson`.
+
+| 🧑 Human | 🤖 Agent | Both |
+| --- | --- | --- |
+| ![Human view of "LLMs in plain words"](https://raw.githubusercontent.com/ApexAI-Academy/.github/main/assets/screenshots/view-human.png) | ![Agent view of "LLMs in plain words"](https://raw.githubusercontent.com/ApexAI-Academy/.github/main/assets/screenshots/view-agent.png) | ![Both view of "LLMs in plain words"](https://raw.githubusercontent.com/ApexAI-Academy/.github/main/assets/screenshots/view-both.png) |
+
+_Screenshots of [LLMs in plain words](https://apexai.academy/lesson.html?id=1), captured from the live site on 2026-10-15._
 
 ## Selection and verification
 
